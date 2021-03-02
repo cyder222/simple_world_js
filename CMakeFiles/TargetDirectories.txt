@@ -1,5 +1,0 @@
-/home/cyder/src/libs/simple_world_js/CMakeFiles/rebuild_cache.dir
-/home/cyder/src/libs/simple_world_js/CMakeFiles/edit_cache.dir
-/home/cyder/src/libs/simple_world_js/CMakeFiles/WorldJS.dir
-/home/cyder/src/libs/simple_world_js/CMakeFiles/World.dir
-/home/cyder/src/libs/simple_world_js/CMakeFiles/Hello.dir

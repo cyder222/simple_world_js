@@ -1,2 +1,0 @@
-/home/cyder/src/libs/emsdk/upstream/emscripten/emar qc libHello.a  CMakeFiles/Hello.dir/src/hello/hello.cpp.o
-/home/cyder/src/libs/emsdk/upstream/emscripten/emranlib libHello.a

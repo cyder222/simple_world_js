@@ -14,6 +14,7 @@ if (CMAKE_BUILD_TYPE STREQUAL Debug)
         -s ASSERTIONS=1 \
         -s SINGLE_FILE \
         -s EXTRA_EXPORTED_RUNTIME_METHODS=['FS'] \
+        --post-js options/post.js \
         --no-entry \
         --bind \
         ")

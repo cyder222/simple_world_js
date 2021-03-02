@@ -30,6 +30,7 @@ else ()
         -s TEXTDECODER=1 \
         -s SINGLE_FILE \
         -s EXTRA_EXPORTED_RUNTIME_METHODS=['FS'] \
+        --post-js options/post.js \
         --no-entry \
         -g3 \
         -Oz \

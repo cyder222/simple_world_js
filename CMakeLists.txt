@@ -20,19 +20,13 @@ if (CMAKE_BUILD_TYPE STREQUAL Debug)
 else ()
     set(flag "\
         -s WASM=1 \
-        -s FORCE_FILESYSTEM=1 \
-        -s ALLOW_MEMORY_GROWTH=1 \
         -s LLD_REPORT_UNDEFINED \
         -s STRICT=1 \
-        -s ASSERTIONS=1 \
         -s TEXTDECODER=1 \
         -s SINGLE_FILE \
-        -s EXTRA_EXPORTED_RUNTIME_METHODS=['FS'] \
         --post-js options/post.js \
         --no-entry \
-        -g3 \
         -O3 \
-        -fp-model:fast \
         --bind \
         --llvm-opts 3 \
         ")

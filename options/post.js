@@ -1,3 +1,3 @@
 globalThis.Module = Module;
 
-export default Module;
+//export default Module;

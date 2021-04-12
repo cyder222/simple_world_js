@@ -36,76 +36,34 @@ emscripten::val WorldWrapper::FeatureExtract(uintptr_t input_ptr)
     ret.set("aperiodicity", Get2XArray<double>(aperiodicity, f0_length, specl));
     ret.set("fft_size", ct_option.fft_size);
 
-    return ret;
-}
-
-emscripten::val WorldWrapper::DioAndStonemask(uintptr_t input_ptr, int fs, double frame_period)
-{
-    const float *float_input_buffer = reinterpret_cast<float *>(input_ptr);
-    unsigned input_buffer_length = this->kernel_buffer_size_;
-    double *input_buffer = new double[input_buffer_length];
-    for (unsigned i = 0; i < input_buffer_length; ++i)
-        input_buffer[i] = static_cast<double>(float_input_buffer[i]);
-    // init dio
-    DioOption option = {0};
-    InitializeDioOption(&option);
-
-    // Get Samples For DIO
-    int f0_length = GetSamplesForDIO(48000, input_buffer_length, frame_period);
-    auto f0 = new double[f0_length];
-    auto time_axis = new double[f0_length];
-    auto refined_f0 = new double[f0_length];
-
-    // run dio
-    Dio(input_buffer, input_buffer_length, 48000, &option, time_axis, f0);
-    StoneMask(input_buffer, input_buffer_length, 48000, time_axis, f0, f0_length, refined_f0);
-
-    for (unsigned i = 0; i < f0_length; i++)
-    {
-        std::cout << "array[" << i << "] = " << refined_f0[i] << std::endl; //個々の配列の値を出力
-    }
-    emscripten::val ret = emscripten::val::object();
-    ret.set("f0", emscripten::val(emscripten::typed_memory_view(f0_length, refined_f0)));
-    ret.set("time_axis", emscripten::val(emscripten::typed_memory_view(f0_length, time_axis)));
-
-    delete[] f0;
-    delete[] refined_f0;
-    delete[] time_axis;
     delete[] input_buffer;
     return ret;
 }
 
-emscripten::val WorldWrapper::CheapTricks(uintptr_t input_ptr, emscripten::val f0_val, emscripten::val time_axis_val, int fs)
+emscripten::val WorldWrapper::Synthesis_JS(emscripten::val f0_val, const emscripten::val &spectral_val, const emscripten::val &aperiodicity_val, int fft_size, int fs, const emscripten::val &frame_period)
 {
-    const float *float_input_buffer = reinterpret_cast<float *>(input_ptr);
-    unsigned input_buffer_length = this->kernel_buffer_size_;
-    double *input_buffer = new double[input_buffer_length];
-    for (unsigned i = 0; i < input_buffer_length; ++i)
-        input_buffer[i] = static_cast<double>(float_input_buffer[i]);
-
     int f0_length;
+    double framePeriodVal;
+    framePeriodVal = frame_period.as<double>();
     auto f0 = GetPtrFrom1XArray<double>(std::move(f0_val), &f0_length);
-    auto time_axis = GetPtrFrom1XArray<double>(std::move(time_axis_val));
-    // Run CheapTrick
-    CheapTrickOption option = {0};
-    InitializeCheapTrickOption(fs, &option);
-    option.f0_floor = 71.0;
-    option.fft_size = GetFFTSizeForCheapTrick(fs, &option);
-    auto spectrogram = new double *[f0_length];
-    int specl = option.fft_size / 2 + 1;
-    for (int i = 0; i < f0_length; i++)
-    {
-        spectrogram[i] = new double[specl];
-    }
-    CheapTrick(input_buffer, input_buffer_length, fs, time_axis, f0, f0_length, &option, spectrogram);
+    int spectrogram_length = spectral_val["length"].as<int>();
+    int aperiodicity_length = aperiodicity_val["length"].as<int>();
+    double **spectrogram = GetPtrFrom2XArray<double>(spectral_val);
+    double **aperiodicity = GetPtrFrom2XArray<double>(aperiodicity_val);
+    int y_length = static_cast<int>((f0_length - 1) * framePeriodVal / 1000.0 * fs) + 1;
+    auto y = new double[y_length];
+    Synthesis(f0, f0_length, spectrogram, aperiodicity, fft_size, framePeriodVal, fs, y_length, y);
+    emscripten::val ret = Get1XArray<double>(y, y_length);
 
-    emscripten::val ret = emscripten::val::object();
-    ret.set("spectral", Get2XArray<double>(spectrogram, f0_length, specl));
-    ret.set("fft_size", option.fft_size);
-
-    delete[] input_buffer;
     delete[] f0;
-    delete[] time_axis;
-    delete[] spectrogram;
+    for (int i = 0; i < spectrogram_length; i++)
+    {
+        delete[] spectrogram;
+    }
+    for (int i = 0; i < aperiodicity_length; i++)
+    {
+        delete[] aperiodicity;
+    }
+    delete[] y;
     return ret;
 }

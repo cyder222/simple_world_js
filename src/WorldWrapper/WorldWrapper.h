@@ -74,7 +74,7 @@ public:
     /**
      * FeatureExtraction for input_ptr using dio , stonemask, cheap_trick, and d4c
      * 
-     * @param input_ptr audio buffer from javascript Module.malloc pointer(float32)
+     * @param input_ptr audio buffer from javascript Module.malloc pointer(float32array)
      * @param fs sample rate
      * @param frame_period frame size
      * 
@@ -82,25 +82,12 @@ public:
      * */
     EMSCRIPTEN_KEEPALIVE emscripten::val FeatureExtract(uintptr_t input_ptr);
 
-    /** 
-     * get f0 using dio and stonemask
-     * 
-     * @param input_ptr audio buffer from javascript Module.malloc pointer
-     * @param fs sample rate
-     * @param frame_period frame size
-     * 
-     * @return javascript object {"f0"=> , "time_axis"=>}
-     **/
-    EMSCRIPTEN_KEEPALIVE emscripten::val DioAndStonemask(uintptr_t input_ptr, int fs, double frame_period);
-
-    // CheapTrick
-    EMSCRIPTEN_KEEPALIVE emscripten::val CheapTricks(uintptr_t input_ptr, emscripten::val f0_val, emscripten::val time_axis_val, int fs);
-
-    // D4C
-    //EMSCRIPTEN_KEEPALIVE emscripten::val D4C(uintptr_t input_ptr, emscripten::val f0_val, emscripten::val time_axis_val, int fft_size, int fs);
-
-    // Synthesis
-    //EMSCRIPTEN_KEEPALIVE emscripten::val Synthesis(uintptr_t input_ptr, const emscripten::val &spectral_val, const emscripten::val &aperiodicity_val, int fft_size, int fs, const emscripten::val &frame_period);
+    /**
+     * Synthesis from audio features
+     * @param f0_val Float32Array of f0
+     * @param spectral_val Float32Array of spectral_val
+     * */
+    EMSCRIPTEN_KEEPALIVE emscripten::val Synthesis_JS(emscripten::val f0_val, const emscripten::val &spectral_val, const emscripten::val &aperiodicity_val, int fft_size, int fs, const emscripten::val &frame_period);
 
 private:
     unsigned kernel_buffer_size_ = 0;

@@ -24,6 +24,7 @@ else ()
         -s STRICT=1 \
         -s TEXTDECODER=1 \
         -s SINGLE_FILE \
+        -s ALLOW_MEMORY_GROWTH=1 \
         --post-js options/post.js \
         --no-entry \
         -O3 \

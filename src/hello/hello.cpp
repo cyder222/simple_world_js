@@ -2,7 +2,7 @@
 #include "stdio.h"
 #include <iostream>
 
-const unsigned kRenderQuantumFrames = 128;
+const unsigned kRenderQuantumFrames = 1024;
 const unsigned kBytesPerChannel = kRenderQuantumFrames * sizeof(float);
 
 void Hello::hello()
@@ -11,7 +11,7 @@ void Hello::hello()
     printf("hello pirntf\n");
 }
 
-void Hello::helloAudio(uintptr_t input_ptr, uintptr_t output_ptr, unsigned channel_count)
+void Hello::helloAudio(uintptr_t input_ptr, uintptr_t output_ptr, unsigned channel_count, unsigned kRenderQuantumFrames)
 {
     float *input_buffer = reinterpret_cast<float *>(input_ptr);
     float *output_buffer = reinterpret_cast<float *>(output_ptr);
@@ -22,6 +22,6 @@ void Hello::helloAudio(uintptr_t input_ptr, uintptr_t output_ptr, unsigned chann
     {
         float *destination = output_buffer + channel * kRenderQuantumFrames;
         float *source = input_buffer + channel * kRenderQuantumFrames;
-        memcpy(destination, source, kBytesPerChannel);
+        memcpy(destination, source, kRenderQuantumFrames * sizeof(float));
     }
 }

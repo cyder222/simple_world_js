@@ -4,8 +4,10 @@ This library assume to use from AudioWorklet.
 You can extract audio features from audio input comming from web audio api.
 
 ## How to build
+```
 emcmake cmake
 make
+```
 
 
 ## how to use

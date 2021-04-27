@@ -12,7 +12,8 @@ make
 
 ## how to use
 
-You can use like ollowing code.
+You can use like following code.
+
 Attension, if you want use for realtime usage, you should use web worker to process audio featrue extraction (and audio synthesys)
 ```sample.worklet.js
 import { default as Module } from "./WorldJS.js";

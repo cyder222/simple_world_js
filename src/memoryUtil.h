@@ -66,3 +66,15 @@ emscripten::val Get2XArray(Type **arr, int y_len, int x_len)
     }
     return arr2x;
 }
+
+template <class Type>
+emscripten::val Get2XArrayFromVector(std::vector<std::vector<Type>> arr)
+{
+    emscripten::val arr2x = emscripten::val::array();
+
+    for (int i = 0; i < arr.size(); i++)
+    {
+        arr2x.set(i, Get1XArray<Type>(arr[i].data(), arr[i].size()));
+    }
+    return arr2x;
+}

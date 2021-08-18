@@ -16,6 +16,7 @@ if (CMAKE_BUILD_TYPE STREQUAL Debug)
         -s EXTRA_EXPORTED_RUNTIME_METHODS=['FS'] \
         --no-entry \
         --bind \
+        -std=c++11 \
         ")
 else ()
     set(flag "\
@@ -30,27 +31,32 @@ else ()
         -O3 \
         --bind \
         --llvm-opts 3 \
+        -std=c++11 \
         ")
 endif ()
 
 include_directories(
         lib/World/src/
+        lib/LibrosaCpp/librosa
         src/hello
         src/WorldWrapper
+        src/FeatureConverter
         src/
 )
 
 file(GLOB sources src/*.cpp)
 file(GLOB Hello src/hello/*.cpp)
 file(GLOB WorldWrapper src/WorldWrapper/*.cpp)
+file(GLOB FeatureConverter src/FeatureConverter/*.cpp)
 file(GLOB World lib/World/src/*.cpp)
 
 add_library(Hello ${Hello})
 add_library(Wrapper ${WorldWrapper})
+add_library(FConverter ${FeatureConverter})
 add_library(World ${World})
-target_link_libraries(Hello WorldWrapper World)
+target_link_libraries(Hello WorldWrapper FeatureConverter World)
 
 # World.JS
-add_executable(WorldJS ${sources} ${Hello} ${WorldWrapper})
+add_executable(WorldJS ${sources} ${Hello} ${WorldWrapper} ${FeatureConverter})
 set_target_properties(WorldJS PROPERTIES LINK_FLAGS ${flag} DEBUG_POSTFIX "d")
 target_link_libraries(WorldJS World)

@@ -16,5 +16,8 @@ emscripten::val FeatureConverter::filterMelJS(uintptr_t wav_ptr, int buffer_leng
     std::vector<float> wav_vector(float_input_buffer, float_input_buffer + buffer_length);
     std::vector<std::vector<float>> mel = librosa::Feature::melspectrogram(wav_vector, sr, n_fft, hop_length, "hann", true, "reflect", 2, n_mels, 0.0, NULL);
 
-    return Get2XArrayFromVector<float>(mel);
+    emscripten::val ret = emscripten::val::object();
+    ret.set("mel", Get2XArrayFromVector<float>(mel));
+    delete float_input_buffer;
+    return ret;
 }

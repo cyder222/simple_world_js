@@ -1,6 +1,3 @@
-[submodule "lib/NumCpp"]
-	path = lib/NumCpp
-	url = https://github.com/dpilger26/NumCpp.git
 [submodule "lib/LibrosaCpp"]
 	path = lib/LibrosaCpp
 	url = https://github.com/ewan-xu/LibrosaCpp.git

@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "simple_world_js"
+version = "0.1.0"
+description = ""
+authors = ["taiki mitsuyasu <boruboredo@gmail.com>"]
+
+[virtualenvs]
+in-project = true
+
+[tool.poetry.dependencies]
+python = "^3.6"
+librosa = "^0.8.1"
+pysptk = "^0.1.18"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

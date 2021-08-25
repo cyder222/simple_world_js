@@ -5,6 +5,9 @@
   "repository": "https://github.com/cyder222/simple_world_js.git",
   "author": "taiki mitsuyasu <boruboredo@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "test": "python test/python/create_parameter_json.py && npx jest"
+  },
   "devDependencies": {
     "@babel/core": "^7.15.0",
     "@babel/preset-env": "^7.15.0",

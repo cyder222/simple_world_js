@@ -13,5 +13,6 @@ EMSCRIPTEN_BINDINGS(WorldJS)
         .function("Synthesis", &WorldWrapper::Synthesis_JS);
     emscripten::class_<FeatureConverter>("FeatureConverter")
         .constructor()
-        .function("melspectram", &FeatureConverter::filterMelJS, emscripten::allow_raw_pointers());
+        .function("melspectram", &FeatureConverter::filterMelJS, emscripten::allow_raw_pointers())
+        .function("mc2sp", &FeatureConverter::mc2sp, emscripten::allow_raw_pointers());
 }

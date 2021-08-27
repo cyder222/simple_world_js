@@ -46,18 +46,22 @@ include_directories(
 )
 
 file(GLOB sources src/*.cpp)
+file(GLOB OOURAFFT lib/ooura-fft/src/*.c)
 file(GLOB Hello src/hello/*.cpp)
+file(GLOB MGC2SP lib/mgc2sp/*.c)
 file(GLOB WorldWrapper src/WorldWrapper/*.cpp)
 file(GLOB FeatureConverter src/FeatureConverter/*.cpp)
 file(GLOB World lib/World/src/*.cpp)
 
 add_library(Hello ${Hello})
 add_library(Wrapper ${WorldWrapper})
-add_library(FConverter ${FeatureConverter})
+add_library(FeatureConverter ${FeatureConverter})
+add_library(MGC2SP ${MGC2SP})
 add_library(World ${World})
-target_link_libraries(Hello WorldWrapper FeatureConverter World)
+add_library(OOURAFFT ${OOURAFFT})
+target_link_libraries(Hello WorldWrapper FeatureConverter World OOURAFFT MGC2SP)
 
 # World.JS
-add_executable(WorldJS ${sources} ${Hello} ${WorldWrapper} ${FeatureConverter})
+add_executable(WorldJS ${MGC2SP} ${sources} ${Hello} ${WorldWrapper} ${FeatureConverter} ${OOURAFFT})
 set_target_properties(WorldJS PROPERTIES LINK_FLAGS ${flag} DEBUG_POSTFIX "d")
-target_link_libraries(WorldJS World)
+target_link_libraries(WorldJS World OOURAFFT MGC2SP)

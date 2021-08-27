@@ -37,6 +37,7 @@ endif ()
 
 include_directories(
         lib/World/src/
+        lib/ooura-fft
         lib/LibrosaCpp/librosa
         src/hello
         src/WorldWrapper

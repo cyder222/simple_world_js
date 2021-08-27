@@ -33,6 +33,8 @@ describe('worldjs', () => {
     });
 
     it('0チャンネル目のsp2melの値が正しい', () => {
+        // create parameter json.pyで作られたjsonとwebassemblyの出力が同じかどうかチェックする
+        // @TODO LibrosaCppを使っているため、melspectramに関しては多少値が違うので、なんとかする
         const expectMel = JSON.parse(fs.readFileSync('/home/cyder/src/libs/simple_world_js/test/expect/melspectrogram.json', 'utf8'))
         expect(converter.melspectram(heapBuffer.getHeapAddress(), audioBuffer.length, 16000, 512, 40, 512, 80).mel[0]).toEqual(expectMel[0])
     });

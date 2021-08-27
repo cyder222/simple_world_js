@@ -1,0 +1,21 @@
+{
+  "name": "simple_world_js",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/cyder222/simple_world_js.git",
+  "author": "taiki mitsuyasu <boruboredo@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "python test/python/create_parameter_json.py && npx jest"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.15.0",
+    "@babel/preset-env": "^7.15.0",
+    "babel-jest": "^27.0.6",
+    "jest": "^27.0.6"
+  },
+  "dependencies": {
+    "@babel/preset-react": "^7.14.5",
+    "audio-loader": "^1.0.3"
+  }
+}

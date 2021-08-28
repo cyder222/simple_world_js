@@ -38,6 +38,7 @@ endif ()
 include_directories(
         lib/World/src/
         lib/ooura-fft
+        lib/mgc2sp
         lib/LibrosaCpp/librosa
         src/hello
         src/WorldWrapper
@@ -62,6 +63,6 @@ add_library(OOURAFFT ${OOURAFFT})
 target_link_libraries(Hello WorldWrapper FeatureConverter World OOURAFFT MGC2SP)
 
 # World.JS
-add_executable(WorldJS ${MGC2SP} ${sources} ${Hello} ${WorldWrapper} ${FeatureConverter} ${OOURAFFT})
+add_executable(WorldJS ${MGC2SP} ${OOURAFFT} ${sources} ${Hello} ${WorldWrapper} ${FeatureConverter} )
 set_target_properties(WorldJS PROPERTIES LINK_FLAGS ${flag} DEBUG_POSTFIX "d")
 target_link_libraries(WorldJS World OOURAFFT MGC2SP)

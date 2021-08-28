@@ -22,6 +22,8 @@ public:
     /**
      * mgc to spectrum with sptk function.
      * @param ceps mel generaized cepstral
+     *
+     * @return ret.sp FLOAT64Array
      * */
-    EMSCRIPTEN_KEEPALIVE emscripten::val mc2spJS(uintptr_t ceps, float alpha = 0.0, float gamma = 0.0, int fftlen = 256);
+    EMSCRIPTEN_KEEPALIVE emscripten::val mc2spJS(uintptr_t ceps, int ceps_length, float alpha = 0.0, int fftlen = 256);
 };

@@ -14,5 +14,5 @@ EMSCRIPTEN_BINDINGS(WorldJS)
     emscripten::class_<FeatureConverter>("FeatureConverter")
         .constructor()
         .function("melspectram", &FeatureConverter::filterMelJS, emscripten::allow_raw_pointers())
-        .function("mc2sp", &FeatureConverter::mc2sp, emscripten::allow_raw_pointers());
+        .function("mc2sp", &FeatureConverter::mc2spJS, emscripten::allow_raw_pointers());
 }

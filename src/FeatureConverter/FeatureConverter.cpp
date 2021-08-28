@@ -5,7 +5,7 @@
 #include "eigen3/Eigen/Core"
 #include "eigen3/unsupported/Eigen/FFT"
 #include "SPTK.h"
-#include "include/fftsg/fftsg.hpp"
+#include "include/fftsg/rfft_engine.hpp"
 
 #include <vector>
 #include <complex>
@@ -23,7 +23,7 @@ emscripten::val FeatureConverter::filterMelJS(uintptr_t wav_ptr, int buffer_leng
     return ret;
 }
 
-emscripten::val FeatureConverter::mc2spJS(uintptr_t ceps, int ceps_length, float alpha = 0.0, int fftlen = 256)
+emscripten::val FeatureConverter::mc2spJS(uintptr_t ceps, int ceps_length, float alpha, int fftlen)
 {
     const float *float_input_buffer = reinterpret_cast<float *>(ceps);
     double *input_buffer = new double[ceps_length];
@@ -35,7 +35,7 @@ emscripten::val FeatureConverter::mc2spJS(uintptr_t ceps, int ceps_length, float
     freqt(input_buffer, ceps_length, output_buffer, order, static_cast<double>(alpha));
     output_buffer[0] *= 2.0;
 
-    float output[fftlen] = {0};
+    double* output = new double[fftlen];
     output[0] = output_buffer[0];
     for (int i = 1; i < order; i++)
     {
@@ -43,16 +43,20 @@ emscripten::val FeatureConverter::mc2spJS(uintptr_t ceps, int ceps_length, float
         output[fftlen - i] = output_buffer[i];
     }
 
-    fftsg::RFFTEngine<float> rfftEngine(fftlen);
+    fftsg::RFFTEngine<double> rfftEngine(fftlen);
     rfftEngine.rfft(output);
     for (int i = 0; i < fftlen; i++)
     {
         output[i] = std::exp(output[i]);
     }
 
-    ret.set("sp", Get1XArray<float>(output));
-    delete input_buffer;
-    delete output_buffer;
+    emscripten::val ret = emscripten::val::object();
+    ret.set("sp", Get1XArray<double>(output, fftlen));
+
+    delete float_input_buffer;
+    delete[] input_buffer;
+    delete[] output_buffer;
+    delete[] output;
 
     return ret;
 }

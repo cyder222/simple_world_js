@@ -49,9 +49,12 @@ emscripten::val FeatureConverter::mc2spJS(uintptr_t ceps, int ceps_length, float
     {
         output[i] = std::exp(output[i]);
     }
-
+    float* ret_output = new float[fftlen];
+    for(int i=0; i<fftlen; i++){
+        ret_output[i] = output[i];
+    }
     emscripten::val ret = emscripten::val::object();
-    ret.set("sp", Get1XArray<double>(output, fftlen));
+    ret.set("sp", Get1XArray<float>(ret_output, fftlen));
 
     delete float_input_buffer;
     delete[] input_buffer;

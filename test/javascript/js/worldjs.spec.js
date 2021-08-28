@@ -21,8 +21,10 @@ describe('worldjs', () => {
         }
         //worldwrapper = new Module.WorldWrapper(128);
         converter = new Module.FeatureConverter();
-        audioBufferMix = await auidoLoader('/home/cyder/src/libs/simple_world_js/test/assets/wav/test.wav');
-        audioBuffer = audioBufferMix.getChannelData(0).slice(0, 1024);
+        //audioBufferMix = await auidoLoader('/home/cyder/src/libs/simple_world_js/test/assets/wav/test.wav');
+        //audioBuffer = audioBufferMix.getChannelData(0).slice(0, 1024);
+        //console.log(audioBuffer);
+        audioBuffer = JSON.parse(fs.readFileSync('/home/cyder/src/libs/simple_world_js/test/expect/audio.json', 'utf8'))
         heapBuffer = new HeapAudioBuffer(Module, audioBuffer.length, 1);
         heapBuffer.getChannelData(0).set(audioBuffer);
 

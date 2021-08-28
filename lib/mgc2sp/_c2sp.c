@@ -60,19 +60,19 @@
 #include <stdio.h>
 
 #if defined(WIN32)
-#  include "SPTK.h"
+#include "SPTK.h"
 #else
-#  include <SPTK.h>
+#include "SPTK.h"
 #endif
 
 void c2sp(double *c, const int m, double *x, double *y, const int l)
 {
-   int m1;
+    int m1;
 
-   m1 = m + 1;
+    m1 = m + 1;
 
-   movem(c, x, sizeof(*c), m1);
-   fillz(x + m1, sizeof(*x), l - m1);
+    movem(c, x, sizeof(*c), m1);
+    fillz(x + m1, sizeof(*x), l - m1);
 
-   fftr(x, y, l);
+    fftr(x, y, l);
 }

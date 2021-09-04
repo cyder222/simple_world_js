@@ -32,7 +32,7 @@ emscripten::val FeatureConverter::mc2spJS(uintptr_t ceps, int ceps_length, float
     for (unsigned i = 0; i < ceps_length; ++i)
         input_buffer[i] = static_cast<double>(float_input_buffer[i]);
 
-    freqt(input_buffer, ceps_length, output_buffer, order, static_cast<double>(alpha));
+    freqt(input_buffer, ceps_length, output_buffer, order, -1.0 * static_cast<double>(alpha));
     output_buffer[0] *= 2.0;
 
     double* output = new double[fftlen];
@@ -45,21 +45,21 @@ emscripten::val FeatureConverter::mc2spJS(uintptr_t ceps, int ceps_length, float
 
     fftsg::RFFTEngine<double> rfftEngine(fftlen);
     rfftEngine.rfft(output);
-    for (int i = 0; i < fftlen; i++)
+    float* ret_output = new float[order + 1];
+    ret_output[0] = std::exp(output[0]);
+    for (int i = 0; i < order; i++)
     {
-        output[i] = std::exp(output[i]);
+        ret_output[i] = static_cast<float>(std::exp(output[i*2]));
     }
-    float* ret_output = new float[fftlen];
-    for(int i=0; i<fftlen; i++){
-        ret_output[i] = output[i];
-    }
+    ret_output[order] = static_cast<float>(std::exp(output[1]));
     emscripten::val ret = emscripten::val::object();
-    ret.set("sp", Get1XArray<float>(ret_output, fftlen));
+    ret.set("sp", Get1XArray<float>(ret_output, order + 1));
 
     delete float_input_buffer;
     delete[] input_buffer;
     delete[] output_buffer;
     delete[] output;
+    delete[] ret_output;
 
     return ret;
 }

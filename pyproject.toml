@@ -11,6 +11,7 @@ in-project = true
 python = "^3.6"
 librosa = "^0.8.1"
 pysptk = "^0.1.18"
+pyworld = "^0.3.0"
 
 [tool.poetry.dev-dependencies]
 

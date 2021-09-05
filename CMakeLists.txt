@@ -20,17 +20,19 @@ if (CMAKE_BUILD_TYPE STREQUAL Debug)
         ")
 else ()
     set(flag "\
+        -s SAFE_HEAP=1 \
         -s WASM=1 \
         -s LLD_REPORT_UNDEFINED \
         -s STRICT=1 \
         -s TEXTDECODER=1 \
         -s SINGLE_FILE \
         -s ALLOW_MEMORY_GROWTH=1 \
+        -s INITIAL_MEMORY=256MB \
         --post-js options/post.js \
         --no-entry \
         -O3 \
         --bind \
-        --llvm-opts 3 \
+        --llvm-opts 3\
         -std=c++11 \
         ")
 endif ()

@@ -28,6 +28,7 @@ else ()
         -s SINGLE_FILE \
         -s ALLOW_MEMORY_GROWTH=1 \
         -s INITIAL_MEMORY=256MB \
+        -s MAXIMUM_MEMORY=512MB \
         --post-js options/post.js \
         --no-entry \
         -O3 \

@@ -52,6 +52,7 @@ sp = pw.cheaptrick(y, f0, t, sr)  # extract smoothed spectrogram
 alpha =  pysptk.util.mcepalpha(sr)
 
 mcep = pysptk.sp2mc(sp, 40, alpha)
+mcep = mcep[:3]
 sp2 = pysptk.mc2sp(mcep, fftlen = 1024, alpha = alpha)
 
 sp2 = list(map(lambda x: list(map(lambda y: repr(y), x)), sp2))

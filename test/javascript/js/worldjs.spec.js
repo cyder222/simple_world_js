@@ -44,24 +44,24 @@ describe('worldjs', () => {
         heapBuffer.free();
     });
 
-    it('mgc2spの値が正しい', () => {
+    /*it('mgc2spの値が正しい', () => {
         const expectSp = JSON.parse(fs.readFileSync('/home/cyder/src/libs/simple_world_js/test/expect/sp.json', 'utf8'));
         const mcep = JSON.parse(fs.readFileSync('/home/cyder/src/libs/simple_world_js/test/expect/mcep.json', 'utf8'));
         const featureLen = mcep[0].length
         const heapBuffer = new HeapAudioBuffer(Module, featureLen, 1);
       
-        heapBuffer.getChannelData(0).set(mcep[1]);
+        heapBuffer.getChannelData(0).set(mcep[0]);
         const sp = converter.mc2sp(heapBuffer.getHeapAddress(), featureLen, 0.41000000000000003, 1024).sp;
         const compareSp = sp.reduce((prev,next)=>{
             return [...prev, next.toString().slice(0,4)];
         },[]);
 
-        const compareExpectSp = expectSp[1].reduce((prev,next) => {
+        const compareExpectSp = expectSp[0].reduce((prev,next) => {
             return [...prev, next.toString().slice(0,4)];
         },[]);
         expect(compareSp).toEqual(compareExpectSp);
         heapBuffer.free();
-    });
+    });*/
 
     it('mcArray2SpArrayの値が正しい', () => {
         const expectSp = JSON.parse(fs.readFileSync('/home/cyder/src/libs/simple_world_js/test/expect/sp.json', 'utf8'));
@@ -71,7 +71,7 @@ describe('worldjs', () => {
         const heapBuffer = new HeapAudioBuffer(Module, featureLen * frameLen, 1);
         heapBuffer.getChannelData(0).set(Float32Array.from([].concat(...mcep)));
         const spArray = converter.mcArray2SpArray(heapBuffer.getHeapAddress(), featureLen, frameLen, 0.41000000000000003, 1024).sp;
-        console.log(spArray);
+        //console.log(spArray);
         const compareSpArray = spArray?.map((sp)=>{
             return sp.reduce((prev,next) =>{
                 return [...prev, next.toString().slice(0,4)];
@@ -83,7 +83,7 @@ describe('worldjs', () => {
                 return [...prev, next.toString().slice(0,4)];
             },[]);
         });
-
+        expect(compareSpArray).toEqual(compareExpectSpArray);
         
         heapBuffer.free();
     });

@@ -20,10 +20,13 @@ public:
     EMSCRIPTEN_KEEPALIVE emscripten::val filterMelJS(uintptr_t wav_ptr, int buffer_length, float sr, int n_fft, int n_mels, float win_length, float hop_length);
 
     /**
-     * mgc to spectrum with sptk function.
-     * @param ceps mel generaized cepstral for 1 frame ( float32Array )
-     * @param ceps_length feature length of ceps
-     * @return ret.sp FLOA32Array
+     * mc2sp
+     * @param ceps mel generaized cepstral for many frame Float32Array (flatten Array<Float32Array> ) 
+     *             eg. when "ceps_length = 3, frame_length = 2"  [[1,2,3],[1,2,3]]->[1,2,3,1,2,3] )
+     * @param ceps_length feature length of ceps. !!you cannot change this parameter from first time of calling this function
+     * @param frame_length frame length of ceps
+     * @param fftlen fft length  . !!you cannot change this parameter from first time of calling this function
+     * @return ret.sp Array<Float32Array>
      * */
-    EMSCRIPTEN_KEEPALIVE emscripten::val mc2spJS(uintptr_t ceps, int ceps_length,  float alpha = 0.0, int fftlen = 256);
+    EMSCRIPTEN_KEEPALIVE emscripten::val mcArray2spArrayJS(uintptr_t ceps, int ceps_length, int frame_length, float alpha = 0.0, int fftlen = 256);
 };

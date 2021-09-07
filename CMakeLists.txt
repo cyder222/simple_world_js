@@ -20,7 +20,6 @@ if (CMAKE_BUILD_TYPE STREQUAL Debug)
         ")
 else ()
     set(flag "\
-        -s SAFE_HEAP=1 \
         -s WASM=1 \
         -s LLD_REPORT_UNDEFINED \
         -s STRICT=1 \

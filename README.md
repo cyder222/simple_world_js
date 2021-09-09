@@ -9,6 +9,14 @@ emcmake cmake
 make
 ```
 
+#how to test
+## 1. install python3 
+## 2. install poetry
+```
+yarn 
+poetry install
+yarn test
+```
 
 ## how to use
 

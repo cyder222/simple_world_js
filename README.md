@@ -10,8 +10,9 @@ make
 ```
 
 #how to test
-## 1. install python3 
-## 2. install poetry
+1. install python3 
+2. install poetry
+3. execute above command
 ```
 yarn 
 poetry install

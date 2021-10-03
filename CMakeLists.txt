@@ -29,6 +29,9 @@ else ()
         -s INITIAL_MEMORY=256MB \
         -s MAXIMUM_MEMORY=512MB \
         --post-js options/post.js \
+        -s EXTRA_EXPORTED_RUNTIME_METHODS=['ccall','cwrap'] \
+        -s ENVIRONMENT='web' \
+        -s MODULARIZE=1 \
         --no-entry \
         -O3 \
         --bind \

@@ -21,7 +21,20 @@ emscripten::val WorldWrapper::FeatureExtract(uintptr_t input_ptr)
     unsigned input_buffer_length = this->kernel_buffer_size_;
     double *input_buffer = new double[input_buffer_length];
     for (unsigned i = 0; i < input_buffer_length; ++i)
+    {
         input_buffer[i] = static_cast<double>(float_input_buffer[i]);
+    }
+
+    for (int i = 0; i < f0_length; i++)
+    {
+        f0[i] = 0.0;
+        refined_f0[i] = 0.0;
+        time_axis[i] = 0.0;
+        for (int j = 0; j< specl; j++){
+            spectrogram[i][j] = 0.0;
+            aperiodicity[i][j] = 0.0;
+        }
+    }
 
     // run
     Dio(input_buffer, input_buffer_length, fs, &dio_option, time_axis, f0);

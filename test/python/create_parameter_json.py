@@ -34,8 +34,10 @@ class NumpyAsStringEncoder(json.JSONEncoder):
 
 y, sr = librosa.load("/home/cyder/src/libs/simple_world_js/test/assets/wav/test.wav", sr=16000,  dtype=None)
 mel = librosa.feature.melspectrogram(y[0:1024], center=True, sr=16000, n_fft=512, hop_length=80, n_mels=40)
+mel_db = librosa.core.power_to_db(mel.transpose())
 
 path = '/home/cyder/src/libs/simple_world_js/test/expect/melspectrogram.json'
+path_mel = '/home/cyder/src/libs/simple_world_js/test/expect/melspectrogram_db.json'
 path2 = '/home/cyder/src/libs/simple_world_js/test/expect/audio.json'
 dumped = json.dumps(mel.transpose(), cls=NumpyEncoder)
 dumped2 = json.dumps(y[0:1024],cls=NumpyEncoder)
@@ -45,6 +47,8 @@ with open(path, 'w') as f:
 
 with open(path2, 'w') as f:
     f.write(dumped2)
+with open(path_mel, 'w') as f:
+    f.write(json.dumps(mel_db, cls=NumpyEncoder))
 
 _f0, t = pw.dio(y, sr)
 f0 = pw.stonemask(y, _f0, t, sr)  # pitch refinement

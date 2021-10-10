@@ -1,7 +1,7 @@
 import { afterAll, expect } from "@jest/globals";
 import auidoLoader from 'audio-loader';
 import { HeapAudioBuffer } from "./wasm-audio-helper";
-import { default as Module } from "../../../WorldJS.js";
+import { default as WorldJS } from "../../../WorldJS.js";
 import fs from 'fs'
 
 function sleep(sec) {
@@ -11,11 +11,10 @@ function sleep(sec) {
 
 describe('worldjs', () => {
     let converter;
+    let Module = null;
 
     beforeAll(async () => {
-        while (Module.WorldWrapper == null) {
-            await sleep(1);
-        }
+        if(Module == null) Module = await WorldJS();
         //worldwrapper = new Module.WorldWrapper(128);
         converter = new Module.FeatureConverter();
         //audioBufferMix = await auidoLoader('/home/cyder/src/libs/simple_world_js/test/assets/wav/test.wav');
@@ -34,7 +33,7 @@ describe('worldjs', () => {
         const compareExpectMel = expectMel.map((value)=> value.reduce((prev,next) => {
             return [...prev, next.toString().slice(0,3)];
         },[]));
-        const mel = converter.melspectram(heapBuffer.getHeapAddress(), audioBuffer.length, 16000, 512, 40, 512, 80).mel;
+        const mel = converter.melspectram(heapBuffer.getHeapAddress(), audioBuffer.length, 16000, 512, 40, 512, 80, false).mel;
         const compareMel = mel.map((value)=> value.reduce((prev,next) => {
             return [...prev, next.toString().slice(0,3)];
         },[]));
@@ -43,6 +42,27 @@ describe('worldjs', () => {
 
         heapBuffer.free();
     });
+
+    it('0チャンネル目のsp2mel(as_db=true)の値が正しい', () => {
+        const audioBuffer = JSON.parse(fs.readFileSync('/home/cyder/src/libs/simple_world_js/test/expect/audio.json', 'utf8'))
+        const heapBuffer = new HeapAudioBuffer(Module, audioBuffer.length, 1);
+        heapBuffer.getChannelData(0).set(audioBuffer);
+        // create parameter json.pyで作られたjsonとwebassemblyの出力が同じかどうかチェックする
+        // @TODO 32bit計算のLibrosaCppを使っているため、64bit計算のlibrosaと値が違う。そのため、2桁、3桁レベルであっていれば許容する
+        const expectMel = JSON.parse(fs.readFileSync('/home/cyder/src/libs/simple_world_js/test/expect/melspectrogram_db.json', 'utf8'));
+        const compareExpectMel = expectMel.map((value)=> value.reduce((prev,next) => {
+            return [...prev, next.toString().slice(0,3)];
+        },[]));
+        const mel = converter.melspectram(heapBuffer.getHeapAddress(), audioBuffer.length, 16000, 512, 40, 512, 80, true).mel;
+        const compareMel = mel.map((value)=> value.reduce((prev,next) => {
+            return [...prev, next.toString().slice(0,3)];
+        },[]));
+        expect(expectMel.length).toEqual(mel.length)
+        expect(compareMel).toEqual(compareExpectMel)
+
+        heapBuffer.free();
+    });
+
 
     /*it('mgc2spの値が正しい', () => {
         const expectSp = JSON.parse(fs.readFileSync('/home/cyder/src/libs/simple_world_js/test/expect/sp.json', 'utf8'));

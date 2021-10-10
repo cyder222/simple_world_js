@@ -17,7 +17,7 @@ public:
     *
     * @return javascript object float32array
     * */
-    EMSCRIPTEN_KEEPALIVE emscripten::val filterMelJS(uintptr_t wav_ptr, int buffer_length, float sr, int n_fft, int n_mels, float win_length, float hop_length);
+    EMSCRIPTEN_KEEPALIVE emscripten::val filterMelJS(uintptr_t wav_ptr, int buffer_length, float sr, int n_fft, int n_mels, float win_length, float hop_length, bool as_db=true);
 
     /**
      * mc2sp

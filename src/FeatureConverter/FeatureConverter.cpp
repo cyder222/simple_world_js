@@ -11,14 +11,23 @@
 #include <complex>
 #include <iostream>
 
-emscripten::val FeatureConverter::filterMelJS(uintptr_t wav_ptr, int buffer_length, float sr, int n_fft, int n_mels, float win_length, float hop_length)
+emscripten::val FeatureConverter::filterMelJS(uintptr_t wav_ptr, int buffer_length, float sr, int n_fft, int n_mels, float win_length, float hop_length, bool as_db)
 {
 
     const float *float_input_buffer = reinterpret_cast<float *>(wav_ptr);
     std::vector<float> wav_vector(float_input_buffer, float_input_buffer + buffer_length);
-    std::vector<std::vector<float>> mel = librosa::Feature::melspectrogram(wav_vector, sr, n_fft, hop_length, "hann", true, "reflect", 2.0, n_mels, 0, sr / 2);
+    librosa::Vectorf map_x = Eigen::Map<librosa::Vectorf>(wav_vector.data(), wav_vector.size());
+    librosa::Matrixf mel = librosa::internal::melspectrogram(map_x, sr, n_fft, hop_length, "hann", true, "reflect", 2.0, n_mels, 0, sr / 2).transpose();
+    if(as_db){
+      mel = librosa::internal::power2db(mel);
+    }
+    std::vector<std::vector<float>> mel_vector(mel.rows(), std::vector<float>(mel.cols(), 0.f));
+    for (int i = 0; i < mel.rows(); ++i){
+      auto &row = mel_vector[i];
+      Eigen::Map<librosa::Vectorf>(row.data(), row.size()) = mel.row(i);
+    }
     emscripten::val ret = emscripten::val::object();
-    ret.set("mel", Get2XArrayFromVector<float>(mel));
+    ret.set("mel", Get2XArrayFromVector<float>(mel_vector));
     delete float_input_buffer;
     return ret;
 }

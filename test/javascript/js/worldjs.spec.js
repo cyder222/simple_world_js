@@ -85,13 +85,23 @@ describe('worldjs', () => {
 
     it('mcArray2SpArrayの値が正しい', () => {
         const expectSp = JSON.parse(fs.readFileSync('/home/cyder/src/libs/simple_world_js/test/expect/sp.json', 'utf8'));
-        const mcep = JSON.parse(fs.readFileSync('/home/cyder/src/libs/simple_world_js/test/expect/mcep.json', 'utf8'));
-        const featureLen = mcep[0].length
-        const frameLen = mcep.length
+        const mcep = JSON.parse(fs.readFileSync('/home/cyder/src/libs/simple_world_js/test/expect/genedMcep.json', 'utf8'));
+        const mcep2 = JSON.parse(fs.readFileSync('/home/cyder/src/libs/simple_world_js/test/expect/mcep.json'))
+        const featureLen = mcep2[0].length;
+        const frameLen = mcep2.length;
+
         const heapBuffer = new HeapAudioBuffer(Module, featureLen * frameLen, 1);
-        heapBuffer.getChannelData(0).set(Float32Array.from([].concat(...mcep)));
+        heapBuffer.getChannelData(0).set(Float32Array.from([].concat(...mcep2)));
+        const heapBuffer0 = new HeapAudioBuffer(Module, mcep.length, 1);
+        //heapBuffer.getChannelData(0).set(Float32Array.from([].concat(...mcep)));
+        heapBuffer0.getChannelData(0).set(Float32Array.from(mcep));
+        const spArray0 = converter.mcArray2SpArray(heapBuffer0.getHeapAddress(), 40, 128, 0.41000000000000003, 1024).sp;
+        heapBuffer0.free();
+        // console.log(spArray0[0]);
+        converter.mcArray2SpArray(heapBuffer.getHeapAddress(), featureLen, frameLen, 0.41000000000000003, 1024).sp;
+        converter.mcArray2SpArray(heapBuffer.getHeapAddress(), featureLen, frameLen, 0.41000000000000003, 1024).sp;
         const spArray = converter.mcArray2SpArray(heapBuffer.getHeapAddress(), featureLen, frameLen, 0.41000000000000003, 1024).sp;
-        //console.log(spArray);
+
         const compareSpArray = spArray?.map((sp)=>{
             return sp.reduce((prev,next) =>{
                 return [...prev, next.toString().slice(0,4)];

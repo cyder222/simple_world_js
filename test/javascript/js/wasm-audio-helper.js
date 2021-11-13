@@ -143,7 +143,6 @@ class HeapAudioBuffer {
     free() {
         this._isInitialized = false;
         this._module._free(this._dataPtr);
-        this._module._free(this._pointerArrayPtr);
         this._channelData = null;
     }
 } // class HeapAudioBuffer

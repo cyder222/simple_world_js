@@ -6,6 +6,7 @@
 #include "eigen3/unsupported/Eigen/FFT"
 #include "SPTK.h"
 #include "include/fftsg/rfft_engine.hpp"
+#include "include/fftsg/fftsg_c.h"
 
 #include <vector>
 #include <complex>
@@ -28,7 +29,6 @@ emscripten::val FeatureConverter::filterMelJS(uintptr_t wav_ptr, int buffer_leng
     }
     emscripten::val ret = emscripten::val::object();
     ret.set("mel", Get2XArrayFromVector<float>(mel_vector));
-    delete float_input_buffer;
     return ret;
 }
 
@@ -37,8 +37,11 @@ emscripten::val FeatureConverter::mcArray2spArrayJS(uintptr_t ceps, int ceps_len
     const float *float_input_buffer = reinterpret_cast<float *>(ceps);
     int order = fftlen / 2;
     emscripten::val ret = emscripten::val::object();
+    static float* ret_outputs = new float[(order + 1) * frame_length];
+    for(int i = 0; i < (order + 1) * frame_length; i++){
+        ret_outputs[i] = 0.0;
+    }
 
-    std::vector<std::vector<float>> ret_outputs;
     for (int i = 0; i < frame_length; i++)
     {
         // おそらくfreqtやrfftの中でメモリ周りで何か行われていて
@@ -48,8 +51,15 @@ emscripten::val FeatureConverter::mcArray2spArrayJS(uintptr_t ceps, int ceps_len
         static double *output_buffer = new double[order];
         static double *output = new double[fftlen];
         static double *input_buffer = new double[ceps_length];
-        static fftsg::RFFTEngine<double> rfftEngine(fftlen);
+        static int *m_ip = new int[2 + static_cast<int>(sqrt(fftlen/4))];
+        static double *m_w = new double[fftlen / 2];
 
+        for (int j = 0; j < 2 + static_cast<int>(sqrt(fftlen/4)); j++){
+            m_ip[j] = 0;
+        }
+        for (int j=0; j< fftlen / 2; j++){
+            m_w[j]= 0.0;
+        }
         for (int j = 0; j < order; j++)
         {
             output_buffer[j] = 0;
@@ -75,20 +85,20 @@ emscripten::val FeatureConverter::mcArray2spArrayJS(uintptr_t ceps, int ceps_len
             output[j] = buffer;
             output[fftlen - j] = buffer;
         }
-        rfftEngine.rfft(output);
-
-        std::vector<float> ret_output(order + 1);
-        ret_output[0] = static_cast<float>(std::exp(output[0]));
+        fftsg::rdft(fftlen, 1, output, m_ip, m_w);
+        ret_outputs[0 + i * (order + 1)] = static_cast<float>(std::exp(output[0]));
         for (int k = 1; k < order; k++)
         {
-            ret_output[k] = static_cast<float>(std::exp(output[k * 2]));
+            ret_outputs[k + i * (order+1)] = static_cast<float>(std::exp(output[k * 2]));
+            if(ret_outputs[k + i * (order+1)] < 0) {
+                std::cout << ret_outputs[k + i * (order+1)] << std::endl;
+            }
         }
-        ret_output[order] = static_cast<float>(std::exp(output[1]));
-        ret_outputs.push_back(ret_output);
+        ret_outputs[order + i*(order+1)] = static_cast<float>(std::exp(output[1]));
+        
     }
-    ret.set("sp", Get2XArrayFromVector(ret_outputs));
 
-    delete float_input_buffer;
+    ret.set("sp", Get2XArrayFrom1Array(ret_outputs, frame_length, order + 1));
 
     return ret;
 }

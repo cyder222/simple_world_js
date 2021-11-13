@@ -7,6 +7,7 @@
 class FeatureConverter
 {
 public:
+    FeatureConverter(){}
     //EMSCRIPTEN_KEEPALIVE emscripten::val mgc2spJS(uintptr_t ptr, float alpha=0.0, float gamma=0.0, float fftlen = 256);
 
     /**

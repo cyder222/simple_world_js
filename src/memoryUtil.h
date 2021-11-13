@@ -1,6 +1,6 @@
 #pragma once
 #include "emscripten/bind.h"
-
+#include <iostream>
 template <class Type>
 emscripten::val Get1XArray(Type *arr, int len)
 {
@@ -68,13 +68,24 @@ emscripten::val Get2XArray(Type **arr, int y_len, int x_len)
 }
 
 template <class Type>
+emscripten::val Get2XArrayFrom1Array(Type *arr, int y_len, int x_len)
+{
+    emscripten::val arr2x = emscripten::val::array();
+    for (int i = 0; i < y_len; i++)
+    {
+        arr2x.set(i, Get1XArray<Type>(&arr[i * x_len], x_len));
+    }
+    return arr2x;
+}
+
+template <class Type>
 emscripten::val Get2XArrayFromVector(std::vector<std::vector<Type>> arr)
 {
     emscripten::val arr2x = emscripten::val::array();
 
     for (int i = 0; i < arr.size(); i++)
     {
-        arr2x.set(i, Get1XArray<Type>(arr[i].data(), arr[i].size()));
+        arr2x.set(i, emscripten::val(emscripten::typed_memory_view( arr[i].size(), arr[i].data()) ) );
     }
     return arr2x;
 }

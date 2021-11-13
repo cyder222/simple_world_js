@@ -33,14 +33,14 @@ class NumpyAsStringEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 y, sr = librosa.load("/home/cyder/src/libs/simple_world_js/test/assets/wav/test.wav", sr=16000,  dtype=None)
-mel = librosa.feature.melspectrogram(y[0:1024], center=True, sr=16000, n_fft=512, hop_length=80, n_mels=40)
+mel = librosa.feature.melspectrogram(y[0:10240], center=True, sr=16000, n_fft=512, hop_length=80, n_mels=40)
 mel_db = librosa.core.power_to_db(mel.transpose())
 
 path = '/home/cyder/src/libs/simple_world_js/test/expect/melspectrogram.json'
 path_mel = '/home/cyder/src/libs/simple_world_js/test/expect/melspectrogram_db.json'
 path2 = '/home/cyder/src/libs/simple_world_js/test/expect/audio.json'
 dumped = json.dumps(mel.transpose(), cls=NumpyEncoder)
-dumped2 = json.dumps(y[0:1024],cls=NumpyEncoder)
+dumped2 = json.dumps(y[0:10240],cls=NumpyEncoder)
 
 with open(path, 'w') as f:
     f.write(dumped)
@@ -56,7 +56,7 @@ sp = pw.cheaptrick(y, f0, t, sr)  # extract smoothed spectrogram
 alpha =  pysptk.util.mcepalpha(sr)
 
 mcep = pysptk.sp2mc(sp, 40, alpha)
-mcep = mcep[:5]
+mcep = mcep[:27]
 sp2 = pysptk.mc2sp(mcep, fftlen = 1024, alpha = alpha)
 
 sp2 = list(map(lambda x: list(map(lambda y: repr(y), x)), sp2))

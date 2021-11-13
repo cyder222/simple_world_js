@@ -65,9 +65,8 @@ add_library(FeatureConverter ${FeatureConverter})
 add_library(MGC2SP ${MGC2SP})
 add_library(World ${World})
 add_library(OOURAFFT ${OOURAFFT})
-target_link_libraries(Hello WorldWrapper FeatureConverter World OOURAFFT MGC2SP)
 
 # World.JS
-add_executable(WorldJS ${MGC2SP} ${OOURAFFT} ${sources} ${Hello} ${WorldWrapper} ${FeatureConverter} )
+add_executable(WorldJS ${sources} ${Hello} ${WorldWrapper} ${FeatureConverter} )
 set_target_properties(WorldJS PROPERTIES LINK_FLAGS ${flag} DEBUG_POSTFIX "d")
 target_link_libraries(WorldJS World OOURAFFT MGC2SP)

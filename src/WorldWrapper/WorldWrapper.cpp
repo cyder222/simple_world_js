@@ -58,11 +58,11 @@ emscripten::val WorldWrapper::Synthesis_JS(emscripten::val f0_val, const emscrip
     delete[] f0;
     for (int i = 0; i < spectrogram_length; i++)
     {
-        delete[] spectrogram;
+        delete[] spectrogram[i];
     }
     for (int i = 0; i < aperiodicity_length; i++)
     {
-        delete[] aperiodicity;
+        delete[] aperiodicity[i];
     }
     delete[] y;
     return ret;

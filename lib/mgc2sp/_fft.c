@@ -63,9 +63,9 @@
 #include <math.h>
 
 #if defined(WIN32)
-#  include "SPTK.h"
+#include "SPTK.h"
 #else
-#  include <SPTK.h>
+#include "SPTK.h"
 #endif
 
 double *_sintbl = 0;
@@ -75,7 +75,8 @@ static int checkm(const int m)
 {
    int k;
 
-   for (k = 4; k <= m; k <<= 1) {
+   for (k = 4; k <= m; k <<= 1)
+   {
       if (k == m)
          return (0);
    }
@@ -106,7 +107,8 @@ int fft(double *x, double *y, const int m)
    * SIN table generation *
    ***********************/
 
-   if ((_sintbl == 0) || (maxfftsize < m)) {
+   if ((_sintbl == 0) || (maxfftsize < m))
+   {
       tblsize = m - m / 4 + 1;
       arg = PI / m * 2;
       if (_sintbl != 0)
@@ -114,7 +116,7 @@ int fft(double *x, double *y, const int m)
       _sintbl = sinp = dgetmem(tblsize);
       *sinp++ = 0;
       for (j = 1; j < tblsize; j++)
-         *sinp++ = sin(arg * (double) j);
+         *sinp++ = sin(arg * (double)j);
       _sintbl[m / 2] = 0;
       maxfftsize = m;
    }
@@ -122,17 +124,20 @@ int fft(double *x, double *y, const int m)
    lf = maxfftsize / m;
    lmx = m;
 
-   for (;;) {
+   for (;;)
+   {
       lix = lmx;
       lmx /= 2;
       if (lmx <= 1)
          break;
       sinp = _sintbl;
       cosp = _sintbl + maxfftsize / 4;
-      for (j = 0; j < lmx; j++) {
+      for (j = 0; j < lmx; j++)
+      {
          xp = &x[j];
          yp = &y[j];
-         for (li = lix; li <= m; li += lix) {
+         for (li = lix; li <= m; li += lix)
+         {
             t1 = *(xp) - *(xp + lmx);
             t2 = *(yp) - *(yp + lmx);
             *(xp) += *(xp + lmx);
@@ -150,7 +155,8 @@ int fft(double *x, double *y, const int m)
 
    xp = x;
    yp = y;
-   for (li = m / 2; li--; xp += 2, yp += 2) {
+   for (li = m / 2; li--; xp += 2, yp += 2)
+   {
       t1 = *(xp) - *(xp + 1);
       t2 = *(yp) - *(yp + 1);
       *(xp) += *(xp + 1);
@@ -167,8 +173,10 @@ int fft(double *x, double *y, const int m)
    yp = y;
    mv2 = m / 2;
    mm1 = m - 1;
-   for (lmx = 0; lmx < mm1; lmx++) {
-      if ((li = lmx - j) < 0) {
+   for (lmx = 0; lmx < mm1; lmx++)
+   {
+      if ((li = lmx - j) < 0)
+      {
          t1 = *(xp);
          t2 = *(yp);
          *(xp) = *(xp + li);
@@ -177,7 +185,8 @@ int fft(double *x, double *y, const int m)
          *(yp + li) = t2;
       }
       li = mv2;
-      while (li <= j) {
+      while (li <= j)
+      {
          j -= li;
          li /= 2;
       }

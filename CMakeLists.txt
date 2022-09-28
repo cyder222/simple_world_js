@@ -26,17 +26,21 @@ else ()
         -s TEXTDECODER=1 \
         -s SINGLE_FILE \
         -s ALLOW_MEMORY_GROWTH=1 \
+        -s INITIAL_MEMORY=256MB \
+        -s MAXIMUM_MEMORY=512MB \
         --post-js options/post.js \
         --no-entry \
         -O3 \
         --bind \
-        --llvm-opts 3 \
+        --llvm-opts 3\
         -std=c++11 \
         ")
 endif ()
 
 include_directories(
         lib/World/src/
+        lib/ooura-fft
+        lib/mgc2sp
         lib/LibrosaCpp/librosa
         src/hello
         src/WorldWrapper
@@ -45,18 +49,22 @@ include_directories(
 )
 
 file(GLOB sources src/*.cpp)
+file(GLOB OOURAFFT lib/ooura-fft/src/*.c)
 file(GLOB Hello src/hello/*.cpp)
+file(GLOB MGC2SP lib/mgc2sp/*.c)
 file(GLOB WorldWrapper src/WorldWrapper/*.cpp)
 file(GLOB FeatureConverter src/FeatureConverter/*.cpp)
 file(GLOB World lib/World/src/*.cpp)
 
 add_library(Hello ${Hello})
 add_library(Wrapper ${WorldWrapper})
-add_library(FConverter ${FeatureConverter})
+add_library(FeatureConverter ${FeatureConverter})
+add_library(MGC2SP ${MGC2SP})
 add_library(World ${World})
-target_link_libraries(Hello WorldWrapper FeatureConverter World)
+add_library(OOURAFFT ${OOURAFFT})
+target_link_libraries(Hello WorldWrapper FeatureConverter World OOURAFFT MGC2SP)
 
 # World.JS
-add_executable(WorldJS ${sources} ${Hello} ${WorldWrapper} ${FeatureConverter})
+add_executable(WorldJS ${MGC2SP} ${OOURAFFT} ${sources} ${Hello} ${WorldWrapper} ${FeatureConverter} )
 set_target_properties(WorldJS PROPERTIES LINK_FLAGS ${flag} DEBUG_POSTFIX "d")
-target_link_libraries(WorldJS World)
+target_link_libraries(WorldJS World OOURAFFT MGC2SP)

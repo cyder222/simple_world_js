@@ -62,9 +62,9 @@
 #include <stdlib.h>
 
 #if defined(WIN32)
-#  include "SPTK.h"
+#include "SPTK.h"
 #else
-#  include <SPTK.h>
+#include "SPTK.h"
 #endif
 
 void freqt(double *c1, const int m1, double *c2, const int m2, const double a)
@@ -74,13 +74,15 @@ void freqt(double *c1, const int m1, double *c2, const int m2, const double a)
    static double *d = NULL, *g;
    static int size;
 
-   if (d == NULL) {
+   if (d == NULL)
+   {
       size = m2;
       d = dgetmem(size + size + 2);
       g = d + size + 1;
    }
 
-   if (m2 > size) {
+   if (m2 > size)
+   {
       free(d);
       size = m2;
       d = dgetmem(size + size + 2);
@@ -90,7 +92,8 @@ void freqt(double *c1, const int m1, double *c2, const int m2, const double a)
    b = 1 - a * a;
    fillz(g, sizeof(*g), m2 + 1);
 
-   for (i = -m1; i <= 0; i++) {
+   for (i = -m1; i <= 0; i++)
+   {
       if (0 <= m2)
          g[0] = c1[-i] + a * (d[0] = g[0]);
       if (1 <= m2)

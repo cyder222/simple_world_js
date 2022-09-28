@@ -1,3 +1,6 @@
 [submodule "lib/LibrosaCpp"]
 	path = lib/LibrosaCpp
 	url = https://github.com/ewan-xu/LibrosaCpp.git
+[submodule "lib/ooura-fft"]
+	path = lib/ooura-fft
+	url = https://github.com/m4saka/ooura-fft-cpp.git
